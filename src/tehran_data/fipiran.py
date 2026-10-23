@@ -11,6 +11,7 @@ import networkx as nx
 import pandas as pd
 
 from .http import HttpClient
+from .text import clean_firm_name
 
 BASE = "https://fund.fipiran.ir/api/v1/fund"
 ROLES = ("manager", "guarantor", "custodian", "auditor")
@@ -44,7 +45,7 @@ def flatten_funds(items) -> pd.DataFrame:
         names = values.map(lambda v: v.get("name") if isinstance(v, dict) else v)
         if temp in df:
             names = names.where(names.notna() & (names != ""), df[temp])
-        df[role] = names
+        df[role] = names.map(clean_firm_name)   # one spelling per firm
     return df
 
 

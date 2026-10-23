@@ -11,6 +11,7 @@ package.
 |---|---|---|
 | **TSETMC** (Tehran Stock Exchange) | daily price history, instrument data incl. *base volume*, daily major-shareholder lists, multi-instrument shareholder panels | `tsetmc` |
 | **FIPIRAN** (fund registry) | every registered mutual fund with size, NAVs, returns, manager and guarantor | `fipiran` |
+| **FIPIRAN + TSETMC** | a **daily panel of all funds** (NAV, returns, asset mix, size, firms), with optional licence and investor details and the market index return, built from scratch or updated incrementally | `fund_panel` |
 | **Mabna** (paid data vendor) | full instrument master, paginated (bring your own token) | `mabna` |
 
 All clients share an HTTP layer with retries, exponential back-off on 5xx/429 and polite
@@ -24,10 +25,13 @@ that guarantees liquidity), measures concentration and draws an interactive netw
 On a FIPIRAN snapshot from April 2025:
 
 ```
-505 funds with assets, 178 firms, 528 links
-manager  : 161 firms, top-5 share of assets 37.1%, HHI 435
+505 funds with assets, 172 firms, 528 links
+manager  : 155 firms, top-5 share of assets 37.4%, HHI 442
 guarantor:  30 firms, top-5 share of assets 66.8%, HHI 1,110
 ```
+
+Firm names are normalised first (Arabic vs Persian letters, legal-form suffixes, role
+prefixes, spacing). Without that, 6 managers appear twice under different spellings.
 
 Fund *management* is fragmented, but the liquidity *guarantees* sit with very few
 institutions: five guarantors back two thirds of all fund assets. That is a concentration of
@@ -42,6 +46,8 @@ pip install -e ".[dev,viz]"
 pytest
 
 python scripts/fund_network.py --out output          # writes concentration tables + fund_network.html
+python scripts/fund_panel.py --start 2025-02-17 --out funds.parquet   # daily panel of all funds
+python scripts/fund_panel.py --update funds.parquet                    # later: append only the new days
 python scripts/shareholder_panel.py instruments.csv --start 20250101 --filter-type 8
 export MABNA_TOKEN=...                                # only for the Mabna client
 ```
@@ -56,6 +62,12 @@ tse.shareholders(inscode, "20250831")
 
 Note: TSETMC and FIPIRAN are often unreachable from outside Iran.
 
+## History
+
+This repository merges two earlier projects: notebooks I wrote at work, and my public
+[Fipiran-Web-Scraping-Iran-mutual-fund-Market](https://github.com/Amir-Shokat/Fipiran-Web-Scraping-Iran-mutual-fund-Market)
+repository, whose fund-panel scraper now lives in `fund_panel.py`.
+
 ## Changes from the original notebooks
 
 * **Credentials removed.** An API token was hard-coded in a notebook. Tokens now come only from
@@ -68,6 +80,12 @@ Note: TSETMC and FIPIRAN are often unreachable from outside Iran.
   name fields; both are handled.
 * A sample graph containing personal names was removed; the network is built from the
   registry's company data only.
+* **Fund panel (from the old Fipiran repository):** details were requested for every fund on
+  every date, including fund-date pairs that do not exist; now only funds present on a date are
+  requested. Missing numbers no longer become the text "nan", 17-digit instrument codes are kept
+  exact, percentages are converted once, and everything runs in memory instead of through
+  temporary Excel files. The old README promised a quick update from a file the repository did
+  not contain; `update_panel` now appends new days to any existing CSV or Parquet panel.
 * An experimental scraper for a currency-rate website was dropped. It never worked reliably
   (the site renders with JavaScript and blocks bots).
 
