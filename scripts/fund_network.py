@@ -34,7 +34,11 @@ for role in ("manager", "guarantor", "custodian", "auditor"):
         continue                       # this endpoint does not report the role
     table, hhi = manager_concentration(funds, role)
     top5 = table["share"].head(5).sum()
-    print(f"{role:9s}: {len(table):3d} firms, top-5 share of assets {top5:.1%}, HHI {hhi:,.0f}")
+    has = funds[role].notna()
+    covered = funds.loc[has, "netAsset"].sum() / funds["netAsset"].sum()
+    # shares are relative to the assets of funds that report this role
+    print(f"{role:9s}: {has.sum():3d} funds ({covered:.0%} of assets) report one; {len(table):3d} firms; "
+          f"top 5 hold {top5:.1%} of those assets ({top5 * covered:.1%} of all); HHI {hhi:,.0f}")
     table.to_csv(out / f"concentration_{role}.csv", encoding="utf-8-sig")
 try:
     to_html(g, str(out / "fund_network.html"))
