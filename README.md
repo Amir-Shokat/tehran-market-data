@@ -27,12 +27,12 @@ On a FIPIRAN snapshot from April 2025:
 ```
 505 funds with assets, 172 firms, 528 links
 manager  : 505 funds (100% of assets) report one; 155 firms; top 5 hold 37.4% of those assets (37.4% of all); HHI 442
-guarantor:  44 funds (22% of assets) report one;  30 firms; top 5 hold 66.8% of those assets (14.9% of all); HHI 1,110
+guarantor:  43 funds (22% of assets) report one;  29 firms; top 5 hold 66.9% of those assets (14.9% of all); HHI 1,114
 ```
 
-Fund *management* is fragmented. Liquidity guarantees are much more concentrated: only 44 funds
+Fund *management* is fragmented. Liquidity guarantees are much more concentrated: only 43 funds
 (holding 22% of all fund assets) report a guarantor in the registry, and among them five banks and
-brokers back two thirds of the money. One guarantor alone backs 17.5% of guaranteed assets through a
+brokers back two thirds of the money. One guarantor alone backs 17.6% of guaranteed assets through a
 single large fund. That concentration of counterparty and liquidity risk is invisible when funds are
 looked at one by one.
 

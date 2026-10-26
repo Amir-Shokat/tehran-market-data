@@ -35,7 +35,7 @@ def normalize_persian(value):
 def clean_firm_name(value):
     """Canonical firm name for managers, guarantors, custodians and auditors.
 
-    Returns None for empty or placeholder values ("نامشخص" = unknown).
+    Returns None for empty or placeholder values ("نامشخص" = unknown, or dashes such as "----").
     """
     if not isinstance(value, str):
         return None
@@ -48,4 +48,4 @@ def clean_firm_name(value):
     for pattern, repl in _RULES:
         s = pattern.sub(repl, s)
     s = " ".join(s.split())
-    return None if s in _PLACEHOLDERS else s
+    return None if s in _PLACEHOLDERS or not s.strip("-") else s

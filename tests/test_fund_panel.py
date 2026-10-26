@@ -13,7 +13,7 @@ from .conftest import FakeResponse
     ("كارگزاري بانك ملي ايران ، مدیر", "کارگزاری بانک ملی ایران"),
     ("بانک تجارت سهامی عام", "بانک تجارت"),
     ("مشاورسرمایه گذاری نیکی", "مشاور سرمایه‌گذاری نیکی"),
-    ("نامشخص", None), ("", None), (None, None),
+    ("نامشخص", None), ("", None), (None, None), ("----", None), ("ضامن (----)", None),
 ])
 def test_clean_firm_name(raw, expected):
     assert clean_firm_name(raw) == expected
